@@ -3,6 +3,32 @@
 **FeedForge** is an AI-powered RSS aggregator with a premium, glassmorphic dashboard UI.
 It includes user authentication, RSS feed management, article browsing, and AI-generated summaries.
 
+## 🎨 Design System
+
+### Colors
+- **Background**: `#020617`
+- **Surface**: `#0F172A`
+- **Card**: `rgba(255,255,255,0.05)`
+- **Primary Gradient**: `linear-gradient(135deg, #3B82F6, #8B5CF6)`
+- **Accent Glow**: `#22D3EE`
+
+### Text
+- **Primary**: `#E2E8F0`
+- **Secondary**: `#94A3B8`
+- **Muted**: `#64748B`
+
+### Spacing Scale
+- `4`, `8`, `12`, `16`, `24`, `32` (Tailwind units)
+
+### Typography Hierarchy
+- **Heading**: Bold, large scale
+- **Subheading**: Medium weight
+- **Body**: Regular weight
+- **Caption**: Small, muted
+
+### Shadows
+- Soft glow shadows using `rgba(59,130,246,0.35)` and `rgba(139,92,246,0.2)`
+
 ## 🔧 Tech Stack
 
 - Frontend: React + Vite + Tailwind CSS + Framer Motion
@@ -39,7 +65,22 @@ feedforge/
 ├─ frontend/
 │  ├─ src/
 │  │  ├─ components/
+│  │  │  ├─ layout/
+│  │  │  │  ├─ AnimatedBackground.jsx
+│  │  │  │  ├─ Sidebar.jsx
+│  │  │  │  └─ Navbar.jsx
+│  │  │  ├─ ui/
+│  │  │  │  ├─ Button.jsx
+│  │  │  │  ├─ Card.jsx
+│  │  │  │  └─ Loader.jsx
+│  │  │  └─ features/
+│  │  │     └─ SummaryPanel.jsx
 │  │  ├─ pages/
+│  │  │  ├─ Login.jsx
+│  │  │  ├─ Register.jsx
+│  │  │  ├─ Dashboard.jsx
+│  │  │  ├─ Articles.jsx
+│  │  │  └─ ArticleDetail.jsx
 │  │  ├─ services/
 │  │  ├─ App.jsx
 │  │  └─ main.jsx

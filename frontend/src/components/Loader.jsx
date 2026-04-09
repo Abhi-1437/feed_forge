@@ -1,9 +1,23 @@
-export default function Loader({ message = 'Loading...' }) {
+export default function Loader({ message = 'Loading...', cards = 3 }) {
   return (
-    <div className="glass-card flex flex-col items-center justify-center rounded-[32px] border border-white/10 px-8 py-12 text-center text-slate-300">
-      <div className="mb-5 h-14 w-14 rounded-full border-4 border-white/20 border-t-[#3B82F6] animate-spin" />
-      <p className="text-sm text-slate-300 mb-6">{message}</p>
-      <div className="h-2 w-48 rounded-full bg-white/10 shimmer" />
+    <div className="space-y-4">
+      <div className="glass-card rounded-[28px] p-6">
+        <div className="mb-3 h-4 w-32 rounded-full shimmer" />
+        <div className="mb-3 h-8 w-56 rounded-full shimmer" />
+        <div className="h-4 w-72 max-w-full rounded-full shimmer" />
+        <p className="mt-5 text-sm text-slate-400">{message}</p>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: cards }).map((_, index) => (
+          <div key={index} className="glass-card rounded-[28px] p-5">
+            <div className="mb-4 aspect-[16/10] rounded-[24px] shimmer" />
+            <div className="mb-3 h-5 w-3/4 rounded-full shimmer" />
+            <div className="mb-2 h-4 w-full rounded-full shimmer" />
+            <div className="mb-5 h-4 w-5/6 rounded-full shimmer" />
+            <div className="h-10 w-28 rounded-2xl shimmer" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

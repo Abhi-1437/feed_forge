@@ -1,50 +1,78 @@
-import React, { useState } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import Sidebar from './components/Sidebar'
-import Navbar from './components/Navbar'
-import Dashboard from './pages/Dashboard'
+import AnimatedBackground from './components/layout/AnimatedBackground'
+import Navbar from './components/layout/Navbar'
+import AppSidebar from './components/layout/AppSidebar'
+import Dashboard from './pages/DashboardPremium'
 import Feeds from './pages/Feeds'
 import Articles from './pages/Articles'
+import ArticleDetail from './pages/ArticleDetail'
+import Folders from './pages/Folders'
 import Login from './pages/Login'
 import Register from './pages/Register'
 
-const authPaths = ['/', '/register', '/login']
+const AUTH_PATHS = new Set(['/', '/login', '/register'])
+
+function PageTransition({ children, pathname }) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -18 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
-  const isAuthRoute = authPaths.includes(location.pathname)
+  const isAuthRoute = useMemo(() => AUTH_PATHS.has(location.pathname), [location.pathname])
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_10%_10%,rgba(59,130,246,0.2),transparent_25%),radial-gradient(circle_at_90%_20%,rgba(139,92,246,0.16),transparent_30%),linear-gradient(180deg,#0F172A_0%,#020617_100%)] text-slate-100">
-      <div className="relative lg:flex">
-        {!isAuthRoute && <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
-        <div className={isAuthRoute ? 'min-h-screen flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8' : 'flex-1 lg:pl-72'}>
-          {!isAuthRoute && <Navbar onToggleSidebar={() => setSidebarOpen(true)} />}
+    <div className="relative min-h-screen overflow-hidden bg-[#020617] text-slate-100">
+      <AnimatedBackground />
 
-          <main className={isAuthRoute ? 'w-full max-w-xl mx-auto' : 'min-h-[calc(100vh-72px)] px-4 pb-10 pt-6 sm:px-6 lg:px-8'}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.28, ease: 'easeOut' }}
-              >
-                <Routes location={location}>
-                  <Route path="/" element={<Register />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/feeds" element={<Feeds />} />
-                  <Route path="/articles" element={<Articles />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="*" element={<Register />} />
-                </Routes>
-              </motion.div>
-            </AnimatePresence>
+      <div className="relative z-10 min-h-screen">
+        {isAuthRoute ? (
+          <main className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+            <PageTransition pathname={location.pathname}>
+              <Routes location={location}>
+                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+            </PageTransition>
           </main>
-        </div>
+        ) : (
+          <div className="flex min-h-screen">
+            <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            <div className="flex min-h-screen flex-1 flex-col lg:pl-80">
+              <Navbar onToggleSidebar={() => setSidebarOpen(true)} />
+              <main className="flex-1 px-4 pb-8 pt-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl">
+                  <PageTransition pathname={location.pathname}>
+                    <Routes location={location}>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/feeds" element={<Feeds />} />
+                      <Route path="/folders" element={<Folders />} />
+                      <Route path="/articles" element={<Articles />} />
+                      <Route path="/articles/:articleId" element={<ArticleDetail />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </PageTransition>
+                </div>
+              </main>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

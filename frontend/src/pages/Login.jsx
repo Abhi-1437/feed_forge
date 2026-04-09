@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import AuthCard from '../components/AuthCard'
+import Button from '../components/ui/Button'
 import { login } from '../services/api'
 
 export default function Login() {
@@ -20,6 +22,7 @@ export default function Login() {
 
       if (token) {
         localStorage.setItem('token', token)
+        localStorage.setItem('feedforge_display_name', email.split('@')[0] || 'Reader')
         window.dispatchEvent(new Event('authChange'))
         navigate('/dashboard')
       } else {
@@ -33,53 +36,69 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto max-w-xl rounded-[32px] border border-white/10 bg-white/5 p-10 shadow-[0_60px_120px_-65px_rgba(59,130,246,0.45)] backdrop-blur-xl">
-      <div className="mb-8 space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8B5CF6]">Welcome back</p>
-        <h1 className="text-4xl font-semibold text-white">Login to FeedForge</h1>
-        <p className="text-slate-400">Access your feeds, discover articles, and generate AI summaries from one modern dashboard.</p>
+    <div className="grid w-full items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="hidden lg:block">
+        <div className="max-w-xl space-y-6">
+          <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-300">
+            Premium SaaS experience
+          </span>
+          <h1 className="text-5xl font-bold leading-tight text-white">
+            Read the signal,
+            <span className="text-gradient"> skip the noise.</span>
+          </h1>
+          <p className="max-w-lg text-lg leading-8 text-slate-400">
+            FeedForge brings your RSS universe into one cinematic workspace with quick summaries, bookmarks, and smooth focus-first navigation.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {['Summaries on demand', 'Fluid reading flow', 'Clean portfolio-ready UI'].map((item) => (
+              <div key={item} className="glass-panel rounded-[24px] p-4 text-sm text-slate-300">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <label className="block text-sm text-slate-300">
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="mt-3 w-full rounded-3xl border border-white/10 bg-[#0F172A] px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500"
-          />
-        </label>
+      <AuthCard
+        badge="Welcome back"
+        title="Login to FeedForge"
+        description="Access your feeds, explore fresh stories, and generate AI summaries in one modern control center."
+        footerPrompt="New here?"
+        footerLink="/register"
+        footerLabel="Create an account"
+      >
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <label className="block text-sm text-slate-300">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="you@example.com"
+              className="mt-3 w-full rounded-2xl border border-white/10 bg-[#0B1120]/90 px-4 py-3 text-slate-100 placeholder:text-slate-500"
+            />
+          </label>
 
-        <label className="block text-sm text-slate-300">
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-3 w-full rounded-3xl border border-white/10 bg-[#0F172A] px-4 py-3 text-slate-100 outline-none placeholder:text-slate-500"
-          />
-        </label>
+          <label className="block text-sm text-slate-300">
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+              className="mt-3 w-full rounded-2xl border border-white/10 bg-[#0B1120]/90 px-4 py-3 text-slate-100 placeholder:text-slate-500"
+            />
+          </label>
 
-        {error && <div className="rounded-3xl bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>}
+          {error && <div className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-3xl bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] px-5 py-3 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-slate-400">
-        New here?{' '}
-        <Link to="/register" className="text-slate-100 font-semibold hover:text-white">
-          Create an account
-        </Link>
-      </p>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? 'Logging in...' : 'Login'}
+          </Button>
+        </form>
+      </AuthCard>
     </div>
   )
 }
